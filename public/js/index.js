@@ -34,11 +34,13 @@ socket.on('newLocationMessage', function(message) {
 
 jQuery('#message-form').on('submit', function(e) {
   e.preventDefault();
+  var messageTextbox = jQuery('[name=message]');
   socket.emit('createMessage', {
     from: 'Biswajit',
-    text: jQuery('[name=message]').val()
+    text: messageTextbox.val()
   }, function(data) {
     console.log(`Data send from local. Response from server is ${data}`);
+    messageTextbox.val('');
   });
 });
 
@@ -48,13 +50,16 @@ locationButton.on('click', function(e) {
   if(!navigator.geolocation) {
     return alert('geolocation not supported by your browser');
   }
+  locationButton.attr('disabled', 'disabled').text('Sending location ......');
   navigator.geolocation.getCurrentPosition(function (postion) {
     console.log(postion);
     socket.emit('createLocationMessage', {
       latitude: postion.coords.latitude,
       longitude: postion.coords.longitude
     });
+    locationButton.removeAttr('disabled').text('Send Location');
   }, function () {
     alert('Unable to featch location');
+    locationButton.removeAttr('disabled').text('Send Location');
   });
 });
