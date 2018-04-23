@@ -5,7 +5,7 @@ const socketIO = require('socket.io');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
-var {generateMessage} = require('./utils/message.js');
+var {generateMessage, generateLocationMessage} = require('./utils/message.js');
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
@@ -24,9 +24,15 @@ io.on('connection', (socket) => {
     callback('data send to users');
   });
 
+  socket.on('createLocationMessage', (coords) => {
+    console.log('createMessage', coords);
+    io.emit('newLocationMessage', generateLocationMessage('Biswajit', coords.latitude, coords.longitude));
+  });
+
   socket.on('disconnect', () => {
     console.log('Connection got Disconnected');
-  })
+  });
+
 
 });
 
