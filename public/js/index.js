@@ -1,5 +1,27 @@
 var socket = io();
 
+function scrollToBottom() {
+  // Selceters
+  // console.log('Inside scrollToBottom function');
+  var messages = jQuery('#messageDiv');
+  var newMessage = messages.children('li:last-child');
+  // Heights
+  var clientHeight =  messages.prop('clientHeight');
+  // console.log('clientHeight', clientHeight);
+  var scrollTop =  messages.prop('scrollTop');
+  // console.log('scrollTop', scrollTop);
+  var scrollHeight =  messages.prop('scrollHeight');
+  // console.log('scrollHeight', scrollHeight);
+  var newMessageHeight =  newMessage.innerHeight();
+  // console.log('newMessageHeight',newMessageHeight);
+  var lastMessageHeight = newMessage.prev().innerHeight();
+  // console.log('lastMessageHeight',lastMessageHeight);
+  // console.log('Total viewport height:', clientHeight + scrollTop + newMessageHeight + lastMessageHeight);
+  if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+    messages.scrollTop(scrollHeight);
+  }
+}
+
 socket.on('connect', function() {
   console.log('connceted to server');
 });
@@ -17,6 +39,7 @@ socket.on('newMessage', function(message) {
     createdAt: formatedTime
   });
   jQuery('#messageDiv').append(html);
+  scrollToBottom();
 });
 
 socket.on('newLocationMessage', function(message) {
@@ -29,6 +52,7 @@ socket.on('newLocationMessage', function(message) {
     createdAt: formatedTime
   });
   jQuery('#messageDiv').append(html);
+  scrollToBottom();
 });
 
 jQuery('#message-form').on('submit', function(e) {
@@ -38,7 +62,7 @@ jQuery('#message-form').on('submit', function(e) {
     from: 'Biswajit',
     text: messageTextbox.val()
   }, function(data) {
-    console.log(`Data send from local. Response from server is ${data}`);
+    // console.log(`Data send from local. Response from server is ${data}`);
     messageTextbox.val('');
   });
 });
