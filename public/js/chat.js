@@ -77,7 +77,6 @@ jQuery('#message-form').on('submit', function(e) {
   e.preventDefault();
   var messageTextbox = jQuery('[name=message]');
   socket.emit('createMessage', {
-    from: 'Biswajit',
     text: messageTextbox.val()
   }, function(data) {
     // console.log(`Data send from local. Response from server is ${data}`);
